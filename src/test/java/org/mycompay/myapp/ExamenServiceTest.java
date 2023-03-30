@@ -61,7 +61,7 @@ public class ExamenServiceTest {
     }
 
     @Test
-    void findPreguntasExamenVerify() {
+    void findPreguntasExamenVerificarLlamadas() {
         // given
         //  -dependencia tran
         when(examenRepository.findAll()).thenReturn(Datos.EXAMENES);
@@ -103,6 +103,36 @@ public class ExamenServiceTest {
         //  - Mockito
         verify(examenRepository).guardar(any(Examen.class));
         verify(preguntaRepository).guardarVarias(anyList());
-        
     }
+
+    @Test
+    void testNumeroDeInvocaciones() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENES);
+        examenService.findExamenPorNombreConPreguntas("Matemáticas");
+
+        // THEN: verify
+        verify(preguntaRepository).findPreguntasPorExamenId(5L);
+        // sobrecargas de verify
+        verify(preguntaRepository, times(1)).findPreguntasPorExamenId(5L);
+        verify(preguntaRepository, atLeastOnce()).findPreguntasPorExamenId(5L);
+        verify(preguntaRepository, atMostOnce()).findPreguntasPorExamenId(5L);
+        verify(preguntaRepository, atLeast(1)).findPreguntasPorExamenId(5L);
+        verify(preguntaRepository, atMost(100)).findPreguntasPorExamenId(5L);
+        verify(examenRepository, never()).guardar(any(Examen.class));
+    }
+
+    @Test
+    void testManejoException() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENES_ID_NULL);
+        when(preguntaRepository.findPreguntasPorExamenId((isNull()))).thenThrow(new IllegalArgumentException());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            examenService.findExamenPorNombreConPreguntas("Matemáticas");
+        });
+
+        assertEquals(IllegalArgumentException.class, exception.getClass());
+        verify(examenRepository).findAll();
+        verify(preguntaRepository).findPreguntasPorExamenId(isNull());
+    }
+
 }

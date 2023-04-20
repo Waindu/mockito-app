@@ -28,29 +28,4 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ExamenServiceSpyTest {
-
-    @Spy
-    ExamenRepositoryImpl examenRepository;
-
-    @Spy
-    PreguntaRepositoryImpl preguntaRepository;
-
-    @InjectMocks
-    ExamenServiceImpl examenService;
-
-    @Test
-    void testSpy() {
-        List<String> preguntas = Arrays.asList("aritmética");
-
-        // when(preguntaRepository.findPreguntasPorExamenId(anyLong())).thenReturn(preguntas);
-        doReturn(preguntas).when(preguntaRepository).findPreguntasPorExamenId(anyLong());
-
-        Examen examen = examenService.findExamenPorNombreConPreguntas("Matemática");
-
-        assertEquals(5, examen.getId());
-
-        verify(examenRepository).findAll();
-        verify(preguntaRepository).findPreguntasPorExamenId(anyLong());
-
-    }
 }

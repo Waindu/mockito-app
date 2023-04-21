@@ -4,6 +4,7 @@ import org.mycompay.myapp.domain.Examen;
 import org.mycompay.myapp.repositories.ExamenRepository;
 import org.mycompay.myapp.repositories.PreguntaRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class ExamenServiceImpl implements ExamenService{
         if (examenOptional.isPresent()) {
             examen = examenOptional.orElseThrow();
             List<String> preguntas = preguntaRepository.findPreguntasPorExamenId(examen.getId());
-            // preguntaRepository.findPreguntasPorExamenId(examen.getId());
+            // preguntaRepository.findPreguntasPorExamenId(examen.getId()); // nueva invocacion para simular segunda llamada al metodo
             examen.setPreguntas(preguntas);
         }
         return examen;
